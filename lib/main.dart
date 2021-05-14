@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'screens/Registerscreen.dart';
 import 'screens/onboard_screen.dart';
 import 'screens/welcome_screen.dart';
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
@@ -14,6 +17,9 @@ void main() {
 
    Widget build(BuildContext context) {
      return MaterialApp(
+       theme: ThemeData(
+         primaryColor: Colors.deepOrangeAccent
+       ),
        home: Splashscreen(),
      );
    }
