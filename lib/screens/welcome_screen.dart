@@ -118,13 +118,16 @@ class welcomescreen extends StatelessWidget {
                       TextSpan(
                         text:'login',
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.orangeAccent),
-                      ),
-                    ],
-                  ),
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orangeAccent)),
+                      ],
+                    ),
                   ),
                   onPressed: () {
-                    showBottomSheet(context);
+                    setState((){
+                      auth.screen ='screen';
+                      });
+                      showBottomSheet(context);
                   },
                 ),
               ],
