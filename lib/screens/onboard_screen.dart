@@ -39,9 +39,7 @@ List<Widget> _pages = [
 class _onboardscreenState extends State<onboardscreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Column(
+    return Column(
         children:[ Expanded(
           child: PageView(
             controller: _controller,
@@ -68,8 +66,8 @@ class _onboardscreenState extends State<onboardscreen> {
           ),
           SizedBox(height: 20,),
       ],
-      ),
-    );
+      );
+
   }
 }
 

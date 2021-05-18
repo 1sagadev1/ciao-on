@@ -1,7 +1,7 @@
 //import 'dart:html';
 import 'package:ciaooo/screens/onboard_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 // ignore: must_be_immutable, camel_case_types
 class welcomescreen extends StatelessWidget {
   @override
@@ -10,7 +10,6 @@ class welcomescreen extends StatelessWidget {
     bool _validPhoneNumber = false;
     var _phoneNumberController = TextEditingController();
     void showBottomSheet(context){
-
       showModalBottomSheet(
         context: context,
         builder: (context)=>  StatefulBuilder(
@@ -22,10 +21,20 @@ class welcomescreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Login',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
-                    Text('Enter your phone number',style: TextStyle(fontSize: 12,color: Colors.grey),),
-                    SizedBox(height: 30,),
-                    TextField(
+                    Visibility(
+                      visible: auth.error=='Invalid OTP' ? true:false,
+                      child: Container(
+                       child: Column(
+                        children:[
+                          Text(auth.error,style: TextStyle(color: Colors.red,fontSize: 12),),
+                        ],
+                      ),
+                     ),
+                    ),
+                        Text('Login',style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),),
+                        Text('Enter your phone number',style: TextStyle(fontSize: 12,color: Colors.grey),),
+                        SizedBox(height: 30,),
+                        TextField(
                       decoration: InputDecoration(
                         prefixText:  "+91",
                         labelText: '10 digit num ',
@@ -33,6 +42,7 @@ class welcomescreen extends StatelessWidget {
                       autofocus: true,
                       keyboardType: TextInputType.phone,
                       maxLength: 10,
+                      controller: _phoneNumberController,
                       onChanged: (value){
                         if(value.length==10){
                           myState((){
@@ -45,25 +55,30 @@ class welcomescreen extends StatelessWidget {
                         }
                       },
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: AbsorbPointer(
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          children: [
+                           Expanded(
+                            child: AbsorbPointer(
                             absorbing: _validPhoneNumber ? false:true,
                             // ignore: deprecated_member_use
-                            child: FlatButton(
+                             child: FlatButton(
                               onPressed: () {
-                                myState((){
-                                  auth.loading=true;
+                                myState(() {
+                                  auth.loading = true;
                                 });
-                                String number ='+91${_phoneNumberController.text}';
-                                auth.verifyPhone(context: context, number: number,latitude: null,longitude: null).then((value){
-                                _phoneNumberController.clear();
+                                String number = '+91${_phoneNumberController
+                                    .text}';
+                                auth.verifyPhone(context: context,
+                                    number: number,
+                                    latitude: null,
+                                    longitude: null).then((value) {
+                                  _phoneNumberController.clear();
+                                });
                               },
-                              color: _validPhoneNumber ? Theme.of(context).primaryColor : Colors.grey,
+                              color: _valid PhoneNumber ? Theme.of(context).primaryColor : Colors.grey,
                               child: auth.loading ? CircularProgressIndicator(
                                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white)
                               ): Text(_validPhoneNumber ? 'Continue' : 'Enter phone num',style: TextStyle(color: Colors.white),),
@@ -78,10 +93,14 @@ class welcomescreen extends StatelessWidget {
             );
           },
         ),
-      );
+      ).whenComplete((){
+        setState((){
+          auth.loading=false;
+          _phoneNumberController.clear();
+            });
+            });
     }
-
-
+    //final locationData = Provider.of<LocationProvider>(context,listen:false);
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
@@ -93,27 +112,59 @@ class welcomescreen extends StatelessWidget {
               top: 10.0,
               // ignore: deprecated_member_use
               child: FlatButton(
-                child: Text('SKIP'),
+                child: Text(
+                    'SKIP',
+                    style: TextStyle(color: Theme.of(context).primaryColor),
+              ),
                 onPressed: (){},
               ),
             ),
-
             Column(
               children: [
-                Expanded(child: onboardscreen()),
-                Text('Get ready to experience the fun ',style: TextStyle(color: Colors.grey),),
-                SizedBox(height: 20,),
-                // ignore: deprecated_member_use
-                FlatButton(
-                  color: Colors.yellow,
-                  child: Text('set location of your college'),
-                  onPressed: (){},
+                Expanded(child: onboardscreen(),
                 ),
-                SizedBox(height: 20,),
+                Text(
+                  'Get ready to experience the fun ',
+                  style: TextStyle(color: Colors.grey),),
+                SizedBox(height: 20,
+                ),
                 // ignore: deprecated_member_use
                 FlatButton(
-                  child: RichText(text: TextSpan(
-                    text:'already had an account?',style: TextStyle( color: Colors.black ),
+                  color: Theme.of(context).primaryColor,
+                  child: locationData.loading ? CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ) : Text(
+                      'set location of your college',
+                      style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () async{
+                    setState((){
+                      locationData.loading=true;
+                     // auth.latitude=locationData.latitude;
+                      //auth.longitude=locationData.longitude;
+                      //auth.address= locationData.selectAddress.addressLine;
+                      });
+
+                   await locationData.getCurrentPosition();
+                    if(locationData.permissionAllowed==true){
+                     // Navigator.pushReplacementNamed(context,MapScreen.id);
+                      setState((){
+                        locationData.loading=false;
+                        });
+                }else{
+                      print('permission not allowed');
+                      setState((){
+                        locationData.loading=false;
+                      });
+                    }
+                },
+                ),
+                // ignore: deprecated_member_use
+                FlatButton(
+                  child: RichText(
+                    text: TextSpan(
+                    text:'already had an account?',
+                    style: TextStyle( color: Colors.grey ),
                     children:[
                       TextSpan(
                         text:'login',
@@ -125,7 +176,7 @@ class welcomescreen extends StatelessWidget {
                   ),
                   onPressed: () {
                     setState((){
-                      auth.screen ='screen';
+                      auth.screen ='Login';
                       });
                       showBottomSheet(context);
                   },

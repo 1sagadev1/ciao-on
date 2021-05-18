@@ -58,8 +58,14 @@ class _LoginScreenState extends State<LoginScreen>{
                         // ignore: deprecated_member_use
                         child: FlatButton(
                           onPressed: () {
+                            //print(locationData.longitude);
                             setState((){
                               auth.loading=true;
+                              auth.screen = 'MapsScreen';
+                              auth.latitude = locationData.latitude;
+                              auth.longitude = locationData.longitude;
+                              auth.address = locationData.selectedAddress.addressLine;
+
                             });
                             String number ='+91${_phoneNumberController.text}';
                             auth.verifyPhone(
