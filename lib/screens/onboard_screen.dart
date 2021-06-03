@@ -63,7 +63,7 @@ class _onboardscreenState extends State<onboardscreen> {
               size: const Size.square(9.0),
               activeSize: const Size(18.0, 9.0),
               activeShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
-              activeColor: Colors.red,
+              activeColor: Colors.black,
             ),
           ),
           SizedBox(height: 20,),

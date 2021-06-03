@@ -1,14 +1,32 @@
-import 'dart:async';
 
-import 'package:flutter/material.dart';
-import 'screens/Registerscreen.dart';
-import 'screens/onboard_screen.dart';
-import 'screens/welcome_screen.dart';
+
+import 'package:ciaooo/providers/auth_provider.dart';
+import 'package:ciaooo/providers/location_provider.dart';
+import 'package:ciaooo/screens/home_screen.dart';
+import 'package:ciaooo/screens/landing_screen.dart';
+import 'package:ciaooo/screens/login_screen.dart';
+import 'package:ciaooo/screens/map_screen.dart';
+import 'package:ciaooo/services/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:ciaooo/screens/Registerscreen.dart';
+import 'providers/store_provider.dart';
+
+import 'screens/welcome_screen.dart';
 void main() async{
+  Provider.debugCheckInvalidValueType = null;
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_)=> AuthProvider()),
+      ChangeNotifierProvider(create: (_)=> LocationProvider()),
+      ChangeNotifierProvider(create: (_)=> StoreProvider()),
+    ],
+    child: MyApp(),
+  ),);
 }
 
 
@@ -17,46 +35,26 @@ void main() async{
 
    Widget build(BuildContext context) {
      return MaterialApp(
+
+
+       debugShowCheckedModeBanner: false,
        theme: ThemeData(
-         primaryColor: Colors.deepOrangeAccent
+          primaryColor: Colors.black,
+           fontFamily: 'Lato',
        ),
        home: Splashscreen(),
+       initialRoute: Splashscreen.id,
+       routes: {
+         Splashscreen.id :(context)=>Splashscreen(),
+         homepage.id:(context)=>homepage(),
+         welcomescreen.id:(context)=>welcomescreen(),
+         mapscreen.id:(context)=>mapscreen(),
+         loginscreen.id:(context)=>loginscreen(),
+         registerscreen.id:(context)=>registerscreen(),
+         LandingScreen.id:(context)=>LandingScreen(),
+
+       },
      );
    }
  }
 
- class Splashscreen extends StatefulWidget {
-  @override
-  _SplashscreenState createState() => _SplashscreenState();
-}
-
-class _SplashscreenState extends State<Splashscreen> {
-
-  @override
-  void initState() {
-  Timer(
-    Duration(seconds: 3,
-    ),(){
-      Navigator.pushReplacement(context, MaterialPageRoute(
-        builder:(context)=>welcomescreen(),
-      ));
-  }
-  );
-    super.initState();
-  }
-   @override
-   Widget build(BuildContext context) {
-     return Scaffold(
-       backgroundColor: Colors.white,
-       body: Center(
-         child: Hero
-           (
-             tag : 'logo',
-             child: Image.asset('images/9.png')),
-
-
-
-      ),
-     );
-   }
-}

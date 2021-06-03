@@ -1,26 +1,32 @@
+import 'package:ciaooo/widgets/image_picker.dart';
+import 'package:ciaooo/widgets/register_form.dart';
 import 'package:flutter/material.dart';
-class Registerscreen extends StatelessWidget {
+class registerscreen extends StatelessWidget {
+  static const String id = 'register-screen';
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.deepOrange,
-      body: Center(
-        child: Column(
-          children: [
-            Hero
-              ( tag:'logo',
+    return SafeArea(
+      child: Scaffold(
+       backgroundColor: Colors.white,
+        body:  Center(
+          child :
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: Column(
+                children: [
+                   shoppiccard(),
+                  registerform(),
 
-                child: Image.asset('images/9.png')),
-            TextField(),
-            TextField(),
-            TextField(),
-            TextField(),
 
-
-
-          ],
+                ],
+              ),
+            ),
+          ),
         ),
-      ),
+    ),
     );
+    
   }
 }

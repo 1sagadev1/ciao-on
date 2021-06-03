@@ -17,14 +17,13 @@ Future<void>updateUserData(Map<String , dynamic>values)async{
   String id = values['id'];
   await _firestore.collection(collection).doc(id).update(values);
 }
-  Future<void>getUserById(String id)async{
+
+  Future<DocumentSnapshot>getUserById(String id)async{
     //String id = values['id'];
-    await _firestore.collection(collection).doc(id).get().then((doc){
-      if(doc.data()==null){
-        return null;
-      }
-      return UserModel.fromSnapshot(doc);
-    });
+  var result =   await _firestore.collection(collection).doc(id).get();
+
+      return result;
+
 
   }
 // gwt user data by user id
